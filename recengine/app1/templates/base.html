@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<li><a rel="nofollow" href="{% url socialauth_begin 'weibo' %}">weibo</a></li>
+<li><a rel="nofollow" href="{% url socialauth_begin 'qq' %}">qq</a></li>
+<li><a rel="nofollow" href="{% url socialauth_begin 'douban-oauth2' %}">douban</a></li>
+注销
+<a href="/logout" > 注销 </a>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<script src="http://d3js.org/d3.v2.js?2.9.1"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<style>
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+.link {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.5px;
+}
+
+.node circle {
+  fill: #ccc;
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+text {
+  font: 10px sans-serif;
+  pointer-events: none;
+}
+
+</style>
+<body>
+<script>
+// http://blog.thomsonreuters.com/index.php/mobile-patent-suits-graphic-of-the-day/
+var links = [
+  {source: "shopping_history", target: "shopping_history", type: "licensing"},
+  {source: "shopping_history", target: "shopping_history", type: "licensing"},
+  {source: "shopping_history", target: "shopping_history", type: "licensing"},
+  {source: "shopping_history", target: "shopping_history", type: "licensing"},
+  {source: "shopping_history", target: "shopping_history", type: "licensing"},
+  {source: "shopping_history", target: "shopping_history", type: "licensing"},
+  {source: "shopping_history", target: "shopping_history", type: "licensing"},
+  {source: "shopping_history", target: "shopping_history", type: "licensing"},
+  {source: "shopping_history", target: "shopping_history", type: "licensing"},
+  {source: "shopping_history", target: "shopping_history", type: "licensing"},
+  {source: "shopping_history_items", target: "shopping_history", type: "licensing"},
+  {source: "shopping_history_items", target: "shopping_history", type: "licensing"},
+  {source: "shopping_history_items", target: "shopping_history", type: "licensing"},
+  {source: "shopping_history_items", target: "shopping_history", type: "licensing"},
+  {source: "shopping_history_items", target: "shopping_history", type: "licensing"},
+  {source: "shopping_history_items", target: "shopping_history_items", type: "licensing"},
+  {source: "shopping_history_items", target: "shopping_history_items", type: "licensing"},
+  {source: "shopping_history_items", target: "shopping_history_items", type: "licensing"},
+  {source: "shopping_history_items", target: "shopping_history_items", type: "licensing"},
+  {source: "shopping_history_items", target: "shopping_history_items", type: "licensing"},
+  {source: "shopping_history_items", target: "shopping_history_items", type: "licensing"},
+  {source: "shopping_history_items", target: "shopping_history_items", type: "licensing"},
+  {source: "shopping_history_items", target: "shopping_history_items", type: "licensing"},
+  {source: "shopping_history_items", target: "shopping_history_items", type: "licensing"},
+  {source: "shopping_history_items", target: "reports_admin", type: "suit"},
+  {source: "shopping_history", target: "reports_admin", type: "licensing"},
+  {source: "shopping_history_payment", target: "shopping_history_payment", type: "licensing"},
+  {source: "shopping_history_items", target: "shopping_history_payment", type: "licensing"},
+  {source: "offers_history", target: "reports_admin", type: "licensing"},
+  {source: "offers_history", target: "reports_admin", type: "licensing"},
+  {source: "offers_history", target: "users", type: "licensing"},
+  {source: "offers_history", target: "users", type: "licensing"},
+  {source: "offers_history", target: "users", type: "licensing"},
+  {source: "offers_history", target: "users", type: "licensing"},
+  {source: "offers_history", target: "users", type: "licensing"},
+  {source: "offers_history", target: "users", type: "licensing"},
+  {source: "offers_history", target: "merchant_loyalty_view", type: "licensing"},
+  {source: "offers_history", target: "offers_history", type: "licensing"},
+  {source: "offers_history", target: "offers_history", type: "licensing"},
+  {source: "offers_history", target: "offers_history", type: "licensing"},
+  {source: "offers_history", target: "offers_history", type: "licensing"},
+  {source: "offers_history", target: "offers_history", type: "licensing"},
+  {source: "offers_history", target: "offers_history", type: "licensing"},
+  {source: "offers_history", target: "offers_history", type: "licensing"},
+  {source: "reports_admin", target: "offers_history", type: "licensing"},
+  {source: "reports_admin", target: "offers_history", type: "licensing"},
+];
+
+var nodes = {};
+
+// Compute the distinct nodes from the links.
+links.forEach(function(link) {
+  link.source = nodes[link.source] || (nodes[link.source] = {name: link.source});
+  link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
+});
+
+var width = 960,
+    height = 500;
+var force = d3.layout.force()
+    .nodes(d3.values(nodes))
+    .links(links)
+    .size([width, height])
+    .linkDistance(200)
+    .charge(-900)
+    .on("tick", tick)
+    .start();
+var tip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-10, 0])
+  .html(function(d) {
+    return "<strong>Weight</strong> <span style='color:red'>" + d + "</span>";
+  })
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+var link = svg.selectAll(".link")
+    .data(force.links())
+  .enter().append("line")
+    .attr("class", "link");
+
+nodes["users"]["self"]=0;
+nodes["shopping_history"]["self"]=10;
+nodes["shopping_history_items"]["self"]=9;
+nodes["offers_history"]["self"]=9;
+nodes["reports_admin"]["self"]=0;
+nodes["shopping_history_payment"]["self"]=1;
+nodes["merchant_loyalty_view"]["self"]=0;
+var node = svg.selectAll(".node")
+    .data(force.nodes())
+  .enter().append("g")
+    .attr("class", "node")
+    .on("mouseover", mouseover)
+    .on("mouseout", mouseout)
+    .call(force.drag);
+node.call(tip);
+node.append("circle")
+    .attr("r", function(d){ return d.weight+5})
+
+
+node.append("text")
+    .attr("x", 12)
+    .attr("dy", ".35em")
+    .text(function(d) { return d.name+":"+"self degree "+(d.self*2)});
+
+function tick() {
+
+  link
+
+      .attr("x1", function(d) { return d.source.x; })
+      .attr("y1", function(d) { return d.source.y; })
+      .attr("x2", function(d) { return d.target.x; })
+      .attr("y2", function(d) { return d.target.y; });
+
+  node
+      .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+}
+
+function mouseover(d) {
+
+	tip.show(d.weight);
+}
+
+function mouseout(d) {
+
+	tip.hide(d);
+}
+
+</script>

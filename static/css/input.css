@@ -1,0 +1,17 @@
+.metric_input {
+  position: relative;
+  margin: 20px 0;
+}
+.metric_input .min_label,
+.metric_input .max_label {
+  position: absolute;
+  top: 0;
+}
+.metric_input input {
+  margin: 0 20px;
+  width: 65%;
+}
+textarea {
+  border-color: #e7e7e7;
+  resize: vertical;
+}

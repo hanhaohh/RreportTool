@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<body>
+
+<style>
+body {
+  font: 10px sans-serif;
+}
+.title{
+	font-size:18px;
+	fill:987;
+	font-family:sans-serif;
+}
+svg {
+  font: 10px sans-serif;
+  shape-rendering: crispEdges;
+}
+
+.bar-less{
+  fill: #945;
+}
+.bar-more{
+  fill: #145;
+}
+.bar-less:hover{
+	transition:0.3s;
+	fill:#584;
+}
+.bar-more:hover{
+	transition:0.3s;
+	fill:#744;
+}
+.axis path, .axis line {
+  fill:none;
+  stroke:#344 ;
+
+}
+
+.bar-text{
+	font-size:12px;
+  display:none;
+	stroke:yellow;
+}
+</style>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<h1>Bar Chart </h1>
+
+<script>
+var h=500;
+var w=1000;
+var margin = {"top":20,"bottom":20,"left":200,"right":20}
+var height=h-margin.top-margin.bottom;
+var width = w- margin.right-margin.left;
+var data = [23, 85, 67, 38, 70, 30, 80, 90 ];
+var colorlist = ["maroon", "darkblue"];
+var labellist = ["Perso1", "Person2", "Person3", "Person4", "Person5", "Person6", "Person7", "Hao"];
+	
+var x=d3.scale.linear().domain([0,100]).range([0,width]);
+
+var y= d3.scale.ordinal()
+	.domain(d3.range(data.length))
+	.rangeBands([height,0],0.15);
+
+var svg = d3.select("body")
+  .append("svg:svg")
+    .attr("width", w )
+    .attr("height", h)
+    .append("svg:g")
+    .attr("transform", "translate("+margin.left+","+margin.top+")");
+
+var xAxis = d3.svg.axis()
+	.scale(x)
+	.ticks(10)
+	.tickSize(-height)
+	.orient("bottom")
+	.tickFormat(function(d){return d+"%"});
+	
+	svg.append("g")
+	.attr("class","x axis")
+	.attr("transform","translate(0,"+height+")")
+	.call(xAxis);
+
+var yAxis = d3.svg.axis()
+	.scale(y)
+	.orient("left")
+	.tickSize(-width)
+	;
+var gy=svg.append("g")
+	.attr("class","y axis")
+	.call(yAxis)
+
+	gy.selectAll("text")
+	.text(function(d){ return labellist[d]})
+	.attr("x",-10)
+	.attr("dy","0.5em")
+	.style("font-size",16);
+
+	gy.selectAll("line")
+    .style("stroke","red");
+
+var title = svg.append("text")
+	.text("What's the score?")
+	.attr("x",-200)
+	.attr("y",20)
+	.attr("class","title")
+	;
+var bars = svg.selectAll(".bar")
+	.data(data)
+	.enter()
+	
+	bars.append("rect")
+	.attr("class",function(d) {
+		if(d>50) {return "bar-less"}
+		else{return "bar-more"}		
+	})
+	.attr("transform",function(i,d){return "translate("+0+","+y.range()[d]+")"})
+	.attr("width",function(d){return 8*d})
+	.attr("height",(y.rangeBand()))
+	.on('mouseover', tipshide)
+    .on('mouseout', tipsshow)
+;
+	bars.append("text")
+	.attr("class","bar-text")
+	.text(function(d) {return d })
+	.attr("x",function(d){return 8*d})
+	.attr("dy","2em")
+	.attr("dx","-2em")
+	.attr("transform",function(i,d){return "translate("+0+","+y.range()[d]+")"})
+;
+
+function tipsshow(){
+	d3.selectAll(".bar-text")
+	.style("display","none");
+}
+function tipshide(){
+	d3.selectAll(".bar-text")
+	.style("transition","2s")
+	.style("display","inline")
+;
+}
+</script>
+<a href="http://www.recengine.org/rfm" style="font-size:18px" >Next</a>
+</body>
+</html>

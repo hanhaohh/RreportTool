@@ -1,0 +1,35 @@
+.title{
+	font-size:18px;
+	fill:987;
+	font-family:sans-serif;
+}
+svg {
+  font: 10px sans-serif;
+  shape-rendering: crispEdges;
+}
+
+.bar-less{
+  fill: #945;
+}
+.bar-more{
+  fill: #145;
+}
+.bar-less:hover{
+	transition:0.3s;
+	fill:#584;
+}
+.bar-more:hover{
+	transition:0.3s;
+	fill:#744;
+}
+.axis path, .axis line {
+  fill:none;
+  stroke:#344 ;
+
+}
+
+.bar-text{
+	font-size:12px;
+  display:none;
+	stroke:yellow;
+}
